@@ -5,34 +5,68 @@
     Template Forms
   </div>
   <div class="panel-body">
-    <form>
+    <form #form="ngForm" (submit)="submitForm(form)">
+      <div class="form-group" [class.has-error]="firstName.invalid">
+        <label for="firstname" class="control-label">First Name</label>
+        <input type="text" id="firstname" name="firstname" [ngModel]="myUser.firstname" 
+          (ngModelChange)="toUperCase($event)" required class="form-control" #firstName="ngModel" />
+        <div class="alert alert-danger" *ngIf="firstName.invalid">
+          First Name is required
+        </div>
+        </div>
       <div class="form-group">
-        <label for="firstname">
-          First Name
+        <label for="lastname">Last Name</label>
+        <input type="text" id="lastname" name="lastname" [ngModel]="myUser.lastname"
+          (ngModelChange)="toTitleCase($event)" class="form-control" />
+      </div>
+      <div class="form-group" [class.has-error]="email.invalid && email.touched" >
+        <label for="email" class="control-label">Email</label>
+        <input type="text" id="email" name="email" class="form-control" [(ngModel)]="myUser.email"
+        pattern="^([a-zA-Z0-9]+)@([a-zA-Z0-9]+)\.([a-zA-Z]{2,5})$" #email="ngModel" />
+        <div class="alert alert-danger" *ngIf="email.invalid && email.touched">
+          Please enter valid email
+        </div>
+      </div>
+      <div class="form-group" [class.has-error]="password.invalid && password.touched">
+        <label for="password" class="control-label">Password</label>
+        <input type="password" id="password" name="password" class="form-control" minlength="5" 
+        [(ngModel)]="myUser.password" #password="ngModel"/>
+        <div class="alert alert-danger" *ngIf="password.invalid && password.touched">
+          Minimum length of password is 5
+        </div>
+      </div>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" name="fulltime" value="fulltime" 
+          [(ngModel)]="myUser.fulltime"/>Fulltime
         </label>
-        <input
-          type="text" id="firstname" name="firstname" [ngModel]="myUser.firstname" 
-          (ngModelChange)="toUperCase($event)" class="form-control"
-        />
       </div>
-      <div class="form-group">
-        <label for="lastname">
-          Last Name
+      <div class="radio">
+        <label>
+          <input type="radio" name="gender" value="male" [(ngModel)]="myUser.gender" />Male
         </label>
-        <input type="text" id="lastname" name="lastname" [(ngModel)]="myUser.lastname | toupper"
-          class="form-control" />
       </div>
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input type="text" id="email" name="email" class="form-control" 
-        [(ngModel)]="myUser.email" />
+      <div class="radio">
+        <label>
+          <input type="radio" name="gender" value="female" [(ngModel)]="myUser.gender" />Female
+        </label>
       </div>
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password" class="form-control"
-        [(ngModel)]="myUser.password"/>
+      <div [class.has-error]="hasCodeLangError">
+        <label for="clang" class="control-label">CodeLang</label>
+        <select id="clang" name="codelang" [(ngModel)]="myUser.codelang"
+          (blur)="validateCodeLang($event)">
+          <option value="default">Select Code Lang</option>
+          <option *ngFor="let lang of languages">
+            {{lang}}
+          </option>
+        </select>
+        <div class="alert alert-danger" *ngIf="hasCodeLangError">
+            Please select valid options
+        </div>
       </div>
-      <button type="submit" class="btn btn-success">Submit</button>
+      <button type="submit" class="btn btn-success" [disabled]="hasCodeLangError">
+        Submit
+      </button>
     </form>
   </div>
 </div>
